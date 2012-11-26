@@ -83,7 +83,20 @@ namespace GeometryWar
 
 
 
+        public bool CheckCollision(Entity object1, Entity object2)
+        {
+            distanceFromTarget = Vector2.Distance(object1.mPosition, object2.mPosition);
 
+            if (distanceFromTarget < 60)
+            {
+                // Collision
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
 
 

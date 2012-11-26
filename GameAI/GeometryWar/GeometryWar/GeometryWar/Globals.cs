@@ -15,8 +15,8 @@ namespace GeometryWar
 {
     public static class  Globals
     {
-        public  static int EnemyCount = 2;
-        public static int EnemyCountT2 = 2;
+        public  static int EnemyCount = 1;
+        public static int EnemyCountT2 = 1;
         //game area is nine times that of 800x600 screen!
         public  static Vector2 Universe = new Vector2(2400,1800);  
         //centre of viewable screen 800x600

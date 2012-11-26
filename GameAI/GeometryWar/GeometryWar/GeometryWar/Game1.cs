@@ -23,6 +23,13 @@ namespace GeometryWar
         AIShip[] theShips = new AIShip[Globals.EnemyCount];
         AIShip[] theShipsFlee = new AIShip[Globals.EnemyCountT2];
         Planet[] thePlanets = new Planet[50];
+        int imageCount = 0;
+
+        //Texture2D bulTexture;
+
+        //Bullet[] myBullets = new Bullet[50];
+        List<Bullet> myBullets = new List<Bullet>();
+        
         //for score info
         SpriteFont font;
 
@@ -61,6 +68,11 @@ namespace GeometryWar
             {
                 thePlanets[i] = new Planet();
             }
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    //myBullets[i] = new Bullet();
+            //    myBullets.Add(new Bullet());
+            //}
             base.Initialize();
         }
 
@@ -76,12 +88,19 @@ namespace GeometryWar
             font = Content.Load<SpriteFont>("MyFont");
             // TODO: use this.Content to load your game content here
             thePlayer.LoadContent(this.Content, "FAX-44 MkIII a");
-            
+
+            //for (int i = 0; i < myBullets.Count; i++)
+            //{
+            //    myBullets[i].LoadContent(this.Content, "Bubble");
+            //}
+            //myBullets.Add(new Bullet(thePlayer.getPos, new Vector2(0, 0), this.Content, "Bubble"));
+
             Globals.radarBackground = Content.Load<Texture2D>("radarBackgroundLrg");
             Globals.redPixel=Content.Load<Texture2D>("redPixel");
             Globals.yellowPixel = Content.Load<Texture2D>("yellowPixel");
             Globals.bluePixel = Content.Load<Texture2D>("bluePixel");
             Globals.whitePixel = Content.Load<Texture2D>("whitePixel");
+            //bulTexture = Content.Load<Texture2D>("Bubble");
             for (int i = 0; i < theShips.Length; i++)
             {
                 theShips[i].LoadContent(this.Content, "F-15F");
@@ -115,6 +134,25 @@ namespace GeometryWar
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
+            KeyboardState aCurrentKeyboardState = Keyboard.GetState();
+            if (aCurrentKeyboardState.IsKeyDown(Keys.Space) == true)
+            {
+                myBullets.Add(new Bullet());
+                myBullets[imageCount].LoadContent(this.Content, "Bubble");
+                myBullets[imageCount].Init(thePlayer);
+                imageCount++;
+            }
+
+            for (int i = 0; i < theShips.Length; i++)
+            {
+                if (myBullets[i].CheckCollision(myBullets[i
+                    
+                    ], theShips[i]) == true)
+                {
+                    int k = 0;
+                }
+            }
+
 
             // TODO: Add your update logic here
             thePlayer.Update(gameTime);
@@ -137,6 +175,10 @@ namespace GeometryWar
                 }
             }
 
+            for (int i = 0; i < myBullets.Count; i++)
+            {
+                myBullets[i].Update(gameTime);
+            }
 
             //// Loops through shipFlee, if its not colliding with self move one ship away from other
             //for (int i2 = 0; i2 < theShipsFlee.Length; i2++)
@@ -177,7 +219,14 @@ namespace GeometryWar
             }
             for (int i = 0; i < thePlanets.Length; i++)
             {
-                thePlanets[i].Draw(spriteBatch);
+                //thePlanets[i].Draw(spriteBatch);
+            }
+
+            for (int i = 0; i < myBullets.Count; i++)
+            {
+                myBullets[i].Draw(spriteBatch);
+                //myBullets[i].Draw(spriteBatch);
+                //spriteBatch.Draw(bulTexture, myBullets[i].position, Color.White);
             }
             //spriteBatch.DrawString(font, thePlayer.mPosition.ToString(), new Vector2(20, 45), Color.White);
             

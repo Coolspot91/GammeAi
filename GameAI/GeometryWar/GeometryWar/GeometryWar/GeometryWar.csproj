@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AIShip.cs" />
+    <Compile Include="Bullet.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="NPC.cs" />

@@ -123,10 +123,6 @@ namespace GeometryWar
         }
 
 
-
-
-
-
         public void AvoidingObsSeek(Player target,AIShip AItarget)
         {
             // Check ditance of enemy ships
