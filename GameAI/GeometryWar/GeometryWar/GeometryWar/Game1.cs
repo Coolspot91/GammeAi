@@ -23,12 +23,14 @@ namespace GeometryWar
         AIShip[] theShips = new AIShip[Globals.EnemyCount];
         AIShip[] theShipsFlee = new AIShip[Globals.EnemyCountT2];
         Planet[] thePlanets = new Planet[50];
-        int imageCount = 0;
 
-        //Texture2D bulTexture;
-
-        //Bullet[] myBullets = new Bullet[50];
         List<Bullet> myBullets = new List<Bullet>();
+
+        int counter = 0;
+        float rateOfFire = 0;
+        bool shot = false;
+        //Texture2D bulTexture;
+        //Bullet[] myBullets = new Bullet[50];
         
         //for score info
         SpriteFont font;
@@ -68,11 +70,10 @@ namespace GeometryWar
             {
                 thePlanets[i] = new Planet();
             }
-            //for (int i = 0; i < 5; i++)
-            //{
-            //    //myBullets[i] = new Bullet();
-            //    myBullets.Add(new Bullet());
-            //}
+            for (int i = 0; i < 5; i++)
+            {
+                myBullets.Add(new Bullet());
+            }
             base.Initialize();
         }
 
@@ -113,6 +114,10 @@ namespace GeometryWar
             {
                 thePlanets[i].LoadContent(this.Content, "Bubble");
             }
+            for (int i = 0; i < myBullets.Count; i++)
+            {
+                myBullets[i].LoadContent(this.Content, "Bubble");
+            }
         }
 
         /// <summary>
@@ -131,27 +136,95 @@ namespace GeometryWar
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            rateOfFire += .1f;
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
+
             KeyboardState aCurrentKeyboardState = Keyboard.GetState();
             if (aCurrentKeyboardState.IsKeyDown(Keys.Space) == true)
             {
-                myBullets.Add(new Bullet());
-                myBullets[imageCount].LoadContent(this.Content, "Bubble");
-                myBullets[imageCount].Init(thePlayer);
-                imageCount++;
+                if (rateOfFire > 2)
+                {
+                    for (int i = 0; i < myBullets.Count; i++)
+                    {
+                        if (myBullets[i].alive != true && shot ==false)
+                        {
+                            myBullets[i].alive = true;
+                            myBullets[i].Init(thePlayer);
+                            rateOfFire = 0;
+                            shot = true;
+                        }
+                    }
+                    shot = false;
+                }
+
+
+                //if (rateOfFire > 2)
+                //{
+                //    if (counter < myBullets.Count)
+                //    {
+                //        myBullets[counter].alive = true;
+                //        myBullets[counter].Init(thePlayer);
+                //        counter++;
+                //        rateOfFire = 0;
+                //    }
+                //}
             }
 
-            for (int i = 0; i < theShips.Length; i++)
+            for (int i = 0; i < myBullets.Count; i++)
             {
-                if (myBullets[i].CheckCollision(myBullets[i
-                    
-                    ], theShips[i]) == true)
+                //if (myBullets[i].TimeToLive > 400)
+                //{
+                //    //myBullets.RemoveAt(i);
+                //    myBullets[i].Init(thePlayer);
+                //    myBullets[i].TimeToLive =0;
+                //    myBullets[i].alive = false;
+                //    counter--;
+                //}
+            }
+
+            for (int i = 0; i < myBullets.Count; i++)
+            {
+                for (int i2 = 0; i2 < theShips.Length; i2++)
                 {
-                    int k = 0;
+                    if (myBullets[i].CheckCollision(myBullets[i], theShips[i2]) == true)
+                    {
+                        //myBullets.RemoveAt(i);
+                        myBullets[i].Init(thePlayer);
+                        myBullets[i].TimeToLive = 0;
+                        myBullets[i].alive = false;
+
+                    }
+                    else if (myBullets[i].TimeToLive > 400)
+                    {
+                        //myBullets.RemoveAt(i);
+                        myBullets[i].Init(thePlayer);
+                        myBullets[i].TimeToLive = 0;
+                        myBullets[i].alive = false;
+                        counter--;
+                    }
                 }
             }
+
+            //for (int i = 0; i < myBullets.Count; i++)
+            //{
+            //    for (int i2 = 0; i2 < theShips.Length; i2++)
+            //    {
+            //        if (shot == true)
+            //        {
+
+            //            if (myBullets[i].CheckCollision(myBullets[i], theShips[i2]) == true)
+            //            {
+            //                myBullets.RemoveAt(i);
+            //            }
+            //            else if (myBullets[i].TimeToLive > 400)
+            //            {
+            //                myBullets.RemoveAt(i);
+            //            }
+            //        }
+            //    }
+            //}
 
 
             // TODO: Add your update logic here
@@ -166,13 +239,13 @@ namespace GeometryWar
 
 
                 // Loops through shipFlee, if its not colliding with self move one ship away from other
-                for (int i2 = 0; i2 < theShipsFlee.Length; i2++)
-                {
-                    if (i != i2)
-                    {
-                        theShipsFlee[i].AvoidingObsSeek(thePlayer, theShipsFlee[i2]);
-                    }
-                }
+                //for (int i2 = 0; i2 < theShipsFlee.Length; i2++)
+                //{
+                //    if (i != i2)
+                //    {
+                //        theShipsFlee[i].AvoidingObsSeek(thePlayer, theShipsFlee[i2]);
+                //    }
+                //}
             }
 
             for (int i = 0; i < myBullets.Count; i++)
@@ -180,14 +253,6 @@ namespace GeometryWar
                 myBullets[i].Update(gameTime);
             }
 
-            //// Loops through shipFlee, if its not colliding with self move one ship away from other
-            //for (int i2 = 0; i2 < theShipsFlee.Length; i2++)
-            //{
-            //    if (i != i2)
-            //    {
-            //        theShipsFlee[i].AvoidingObsSeek(thePlayer, theShipsFlee[i2]);
-            //    }
-            //}
             base.Update(gameTime);
         }
 
@@ -224,12 +289,14 @@ namespace GeometryWar
 
             for (int i = 0; i < myBullets.Count; i++)
             {
-                myBullets[i].Draw(spriteBatch);
-                //myBullets[i].Draw(spriteBatch);
-                //spriteBatch.Draw(bulTexture, myBullets[i].position, Color.White);
+                if (myBullets[i].alive == true)
+                {
+                    myBullets[i].Draw(spriteBatch);
+                }
             }
-            //spriteBatch.DrawString(font, thePlayer.mPosition.ToString(), new Vector2(20, 45), Color.White);
-            
+
+
+            //spriteBatch.DrawString(font, thePlayer.mPosition.ToString(), new Vector2(20, 45), Color.White);            
             //Draw Radar!!
             //one pixel per ship/planet
             //radar is in top left corner

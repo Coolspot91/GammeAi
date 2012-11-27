@@ -87,7 +87,8 @@ namespace GeometryWar
         {
             distanceFromTarget = Vector2.Distance(object1.mPosition, object2.mPosition);
 
-            if (distanceFromTarget < 60)
+            if (distanceFromTarget < 4
+                0)
             {
                 // Collision
                 return true;

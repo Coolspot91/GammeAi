@@ -12,6 +12,9 @@ namespace GeometryWar
 {
     class Bullet : Entity
     {
+        public float TimeToLive = 0;
+        public bool alive = false;
+
         public void Init(Player player)
         {
             this.mPosition = player.getPos;
@@ -27,6 +30,8 @@ namespace GeometryWar
             mPosition += mVelocity;
             mVelocity = Vector2.Normalize(mVelocity);
             mVelocity = mVelocity * maxSpeed;
+
+            TimeToLive++;
         }
     }
 }
