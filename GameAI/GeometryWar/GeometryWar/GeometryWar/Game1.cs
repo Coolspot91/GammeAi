@@ -20,10 +20,11 @@ namespace GeometryWar
         SpriteBatch spriteBatch;
         //Create player and ships here
         Player thePlayer = new Player();
-        AIShip[] theShips = new AIShip[Globals.EnemyCount];
+        //AIShip[] theShips = new AIShip[Globals.EnemyCount];
         AIShip[] theShipsFlee = new AIShip[Globals.EnemyCountT2];
         Planet[] thePlanets = new Planet[50];
 
+        List<AIShip> theShips = new List<AIShip>();
         List<Bullet> myBullets = new List<Bullet>();
 
         int counter = 0;
@@ -58,9 +59,9 @@ namespace GeometryWar
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            for (int i = 0; i < theShips.Length; i++)
+            for (int i = 0; i < 2; i++)
             {
-                theShips[i] = new AIShip();
+                theShips.Add( new AIShip());
             }
             for (int i = 0; i < theShipsFlee.Length; i++)
             {
@@ -102,7 +103,7 @@ namespace GeometryWar
             Globals.bluePixel = Content.Load<Texture2D>("bluePixel");
             Globals.whitePixel = Content.Load<Texture2D>("whitePixel");
             //bulTexture = Content.Load<Texture2D>("Bubble");
-            for (int i = 0; i < theShips.Length; i++)
+            for (int i = 0; i < theShips.Count; i++)
             {
                 theShips[i].LoadContent(this.Content, "F-15F");
             }
@@ -112,7 +113,7 @@ namespace GeometryWar
             }
             for (int i = 0; i < thePlanets.Length; i++)
             {
-                thePlanets[i].LoadContent(this.Content, "Bubble");
+                thePlanets[i].LoadContent(this.Content, "asteroid");
             }
             for (int i = 0; i < myBullets.Count; i++)
             {
@@ -158,35 +159,23 @@ namespace GeometryWar
                     }
                     shot = false;
                 }
-
-
-                //if (rateOfFire > 2)
-                //{
-                //    if (counter < myBullets.Count)
-                //    {
-                //        myBullets[counter].alive = true;
-                //        myBullets[counter].Init(thePlayer);
-                //        counter++;
-                //        rateOfFire = 0;
-                //    }
-                //}
             }
+
+            //for (int i = 0; i < myBullets.Count; i++)
+            //{
+            //    //if (myBullets[i].TimeToLive > 400)
+            //    //{
+            //    //    //myBullets.RemoveAt(i);
+            //    //    myBullets[i].Init(thePlayer);
+            //    //    myBullets[i].TimeToLive =0;
+            //    //    myBullets[i].alive = false;
+            //    //    counter--;
+            //    //}
+            //}
 
             for (int i = 0; i < myBullets.Count; i++)
             {
-                //if (myBullets[i].TimeToLive > 400)
-                //{
-                //    //myBullets.RemoveAt(i);
-                //    myBullets[i].Init(thePlayer);
-                //    myBullets[i].TimeToLive =0;
-                //    myBullets[i].alive = false;
-                //    counter--;
-                //}
-            }
-
-            for (int i = 0; i < myBullets.Count; i++)
-            {
-                for (int i2 = 0; i2 < theShips.Length; i2++)
+                for (int i2 = 0; i2 < theShips.Count; i2++)
                 {
                     if (myBullets[i].CheckCollision(myBullets[i], theShips[i2]) == true)
                     {
@@ -194,6 +183,7 @@ namespace GeometryWar
                         myBullets[i].Init(thePlayer);
                         myBullets[i].TimeToLive = 0;
                         myBullets[i].alive = false;
+                        theShips.RemoveAt(i2);
 
                     }
                     else if (myBullets[i].TimeToLive > 400)
@@ -202,7 +192,6 @@ namespace GeometryWar
                         myBullets[i].Init(thePlayer);
                         myBullets[i].TimeToLive = 0;
                         myBullets[i].alive = false;
-                        counter--;
                     }
                 }
             }
@@ -229,12 +218,12 @@ namespace GeometryWar
 
             // TODO: Add your update logic here
             thePlayer.Update(gameTime);
-            for (int i = 0; i < theShips.Length; i++)
+            for (int i = 0; i < theShips.Count; i++)
             {
                 theShips[i].Update(gameTime);
 
                 theShipsFlee[i].Update(gameTime);
-                //theShips[i].seek2(thePlayer);
+                theShips[i].seek2(thePlayer);
                 //theShipsFlee[i].wandering(thePlayer);
 
 
@@ -262,7 +251,7 @@ namespace GeometryWar
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
 
@@ -270,7 +259,7 @@ namespace GeometryWar
             Globals.translation = Globals.Centre - thePlayer.mPosition;
             spriteBatch.Begin();
             thePlayer.Draw(spriteBatch);
-            for (int i = 0; i < theShips.Length; i++)
+            for (int i = 0; i < theShips.Count; i++)
             {
                 theShips[i].Draw(spriteBatch);
                 theShipsFlee[i].Draw(spriteBatch);
@@ -284,7 +273,7 @@ namespace GeometryWar
             }
             for (int i = 0; i < thePlanets.Length; i++)
             {
-                //thePlanets[i].Draw(spriteBatch);
+                thePlanets[i].Draw(spriteBatch);
             }
 
             for (int i = 0; i < myBullets.Count; i++)
@@ -302,7 +291,7 @@ namespace GeometryWar
             //radar is in top left corner
             Globals.radarTranslation = Globals.Universe / 2 - thePlayer.mPosition;
             spriteBatch.Draw(Globals.radarBackground, Vector2.Zero, Color.White);
-            for (int i = 0; i < theShips.Length; i++)
+            for (int i = 0; i < theShips.Count; i++)
             {
                 Vector2 pos = theShips[i].mPosition;
                 pos+=Globals.radarTranslation;

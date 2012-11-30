@@ -19,7 +19,7 @@ namespace GeometryWar
         {
             this.mPosition = player.getPos;
             this.mVelocity = player.mVelocity;
-            this.maxSpeed = 1;
+            this.maxSpeed = 5;
         }
         public Vector2 getPos
         {

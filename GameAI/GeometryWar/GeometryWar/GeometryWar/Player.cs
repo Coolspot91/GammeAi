@@ -29,19 +29,19 @@ namespace GeometryWar
                 KeyboardState aCurrentKeyboardState = Keyboard.GetState();
                 if (aCurrentKeyboardState.IsKeyDown(Keys.Left) == true)
                 {
-                    mAcceleration.X = -2f;
+                    mAcceleration.X = -1f;
                 }
                 else if (aCurrentKeyboardState.IsKeyDown(Keys.Right) == true)
                 {
-                    mAcceleration.X = 2f;
+                    mAcceleration.X = 1f;
                 }
                 if (aCurrentKeyboardState.IsKeyDown(Keys.Up) == true)
                 {
-                    mAcceleration.Y = -2f;
+                    mAcceleration.Y = -1f;
                 }
                 else if (aCurrentKeyboardState.IsKeyDown(Keys.Down) == true)
                 {
-                    mAcceleration.Y = 2f;
+                    mAcceleration.Y = 1f;
                 }
                 mVelocity += mAcceleration;
                 mOrientation = Vector2.Normalize(mVelocity);
