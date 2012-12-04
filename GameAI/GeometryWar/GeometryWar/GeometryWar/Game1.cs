@@ -21,11 +21,14 @@ namespace GeometryWar
         //Create player and ships here
         Player thePlayer = new Player();
         //AIShip[] theShips = new AIShip[Globals.EnemyCount];
-        AIShip[] theShipsFlee = new AIShip[Globals.EnemyCountT2];
+        //AIShip[] theShipsFlee = new AIShip[Globals.EnemyCountT2];
         Planet[] thePlanets = new Planet[50];
 
         List<AIShip> theShips = new List<AIShip>();
+        List<AIShip> theShipsType2 = new List<AIShip>();
         List<Bullet> myBullets = new List<Bullet>();
+
+        List<Bullet> enemyBullets = new List<Bullet>();
 
         int counter = 0;
         float rateOfFire = 0;
@@ -63,9 +66,9 @@ namespace GeometryWar
             {
                 theShips.Add( new AIShip());
             }
-            for (int i = 0; i < theShipsFlee.Length; i++)
+            for (int i = 0; i < 2; i++)
             {
-                theShipsFlee[i] = new AIShip();
+                theShipsType2.Add(new AIShip());
             }
             for (int i = 0; i < thePlanets.Length; i++)
             {
@@ -74,6 +77,10 @@ namespace GeometryWar
             for (int i = 0; i < 5; i++)
             {
                 myBullets.Add(new Bullet());
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                enemyBullets.Add(new Bullet());
             }
             base.Initialize();
         }
@@ -107,9 +114,9 @@ namespace GeometryWar
             {
                 theShips[i].LoadContent(this.Content, "F-15F");
             }
-            for (int i = 0; i < theShipsFlee.Length; i++)
+            for (int i = 0; i < theShipsType2.Count; i++)
             {
-                theShipsFlee[i].LoadContent(this.Content, "F-22B");
+                theShipsType2[i].LoadContent(this.Content, "F-22B");
             }
             for (int i = 0; i < thePlanets.Length; i++)
             {
@@ -118,6 +125,10 @@ namespace GeometryWar
             for (int i = 0; i < myBullets.Count; i++)
             {
                 myBullets[i].LoadContent(this.Content, "Bubble");
+            }
+            for (int i = 0; i < enemyBullets.Count; i++)
+            {
+                enemyBullets[i].LoadContent(this.Content, "Bubble");
             }
         }
 
@@ -177,24 +188,34 @@ namespace GeometryWar
             {
                 for (int i2 = 0; i2 < theShips.Count; i2++)
                 {
-                    if (myBullets[i].CheckCollision(myBullets[i], theShips[i2]) == true)
+                    if (myBullets[i].CheckCollision(myBullets[i], theShips[i2]) == true && myBullets[i].alive == true)
                     {
                         //myBullets.RemoveAt(i);
                         myBullets[i].Init(thePlayer);
-                        myBullets[i].TimeToLive = 0;
-                        myBullets[i].alive = false;
+                        myBullets[i].resetBullet();
                         theShips.RemoveAt(i2);
 
-                    }
-                    else if (myBullets[i].TimeToLive > 400)
+                    }   
+                }
+                for (int i2 = 0; i2 < theShipsType2.Count; i2++)
+                {
+                     if (myBullets[i].CheckCollision(myBullets[i], theShipsType2[i2]) == true )
                     {
-                        //myBullets.RemoveAt(i);
                         myBullets[i].Init(thePlayer);
-                        myBullets[i].TimeToLive = 0;
-                        myBullets[i].alive = false;
+                        theShipsType2.RemoveAt(i2);
                     }
                 }
-            }
+                if (myBullets[i].TimeToLive > 400)
+                {
+                     //myBullets.RemoveAt(i);
+                        
+                     myBullets[i].Init(thePlayer);
+                     myBullets[i].resetBullet();
+                }
+                myBullets[i].TimeToLive++;
+             }
+            
+    
 
             //for (int i = 0; i < myBullets.Count; i++)
             //{
@@ -215,31 +236,71 @@ namespace GeometryWar
             //    }
             //}
 
+            //for (int i = 0; i < enemyBullets.Count; i++)
+            //{
+            //    for (int i2 = 0; i2 < theShipsType2.Count; i2++)
+            //    {//collision
+
+            //        if (enemyBullets[i].TimeToLive > 100)
+            //        {
+            //            enemyBullets[i].Init(theShipsType2[i2]);
+            //            enemyBullets[i].resetBullet();
+            //        }
+            //    }
+            //    enemyBullets[i].TimeToLive++;
+            //}
 
             // TODO: Add your update logic here
             thePlayer.Update(gameTime);
+            for (int i = 0; i < theShipsType2.Count; i++)
+            {
+                theShipsType2[i].Update(gameTime);
+                theShipsType2[i].AvoidingObsSeek(thePlayer.mPosition, theShipsType2[i].mTranslation);
+                float distanceFromTarget = Vector2.Distance(thePlayer.mPosition, theShipsType2[i].mTranslation);
+                if (distanceFromTarget > 100 && enemyBullets[i].alive == false)
+                {
+                    enemyBullets[i].Init(theShipsType2[i]);
+                    enemyBullets[i].alive = true;
+                }
+            }
             for (int i = 0; i < theShips.Count; i++)
             {
                 theShips[i].Update(gameTime);
 
-                theShipsFlee[i].Update(gameTime);
-                theShips[i].seek2(thePlayer);
-                //theShipsFlee[i].wandering(thePlayer);
+                //theShipsType2[i].Update(gameTime);
+                theShips[i].seek2(thePlayer.mTranslation);
+            }
 
 
-                // Loops through shipFlee, if its not colliding with self move one ship away from other
-                //for (int i2 = 0; i2 < theShipsFlee.Length; i2++)
+
+                // //Loops through shipFlee, if its not colliding with self move one ship away from other
+                //for (int i2 = 0; i2 < theShipsType2.Count; i2++)
                 //{
                 //    if (i != i2)
                 //    {
-                //        theShipsFlee[i].AvoidingObsSeek(thePlayer, theShipsFlee[i2]);
+                //        float distanceFromTarget = Vector2.Distance(thePlayer.mPosition, theShipsType2[i2].mTranslation);
+                //        if (distanceFromTarget >100)
+                //        {
+                //            //enemyBullets[i].Init(theShipsType2[i]);
+                //            //enemyBullets[i].alive = true;
+                //        }
                 //    }
                 //}
-            }
+            //}
 
             for (int i = 0; i < myBullets.Count; i++)
             {
                 myBullets[i].Update(gameTime);
+            }
+            for (int i = 0; i < enemyBullets.Count; i++)
+            {
+                enemyBullets[i].Update(gameTime);
+                enemyBullets[i].TimeToLive++;
+                if (enemyBullets[i].TimeToLive >200)
+                {
+                    //enemyBullets[i].Init(theShipsType2[i]);
+                    enemyBullets[i].resetBullet();
+                }
             }
 
             base.Update(gameTime);
@@ -262,18 +323,18 @@ namespace GeometryWar
             for (int i = 0; i < theShips.Count; i++)
             {
                 theShips[i].Draw(spriteBatch);
-                theShipsFlee[i].Draw(spriteBatch);
                 Vector2 pos = new Vector2(theShips[i].mPosition.X + Globals.translation.X, theShips[i].mPosition.Y + Globals.translation.Y);
-
-                Vector2 posForFlee = new Vector2(theShipsFlee[i].mPosition.X + Globals.translation.X, theShips[i].mPosition.Y + Globals.translation.Y);
-
                 spriteBatch.DrawString(font, thePlayer.mPosition.ToString(), thePlayer.mTranslation, Color.White);
-
-                spriteBatch.DrawString(font, theShipsFlee[i].mVelocity.ToString(), theShipsFlee[i].mTranslation, Color.White);
+            }
+            for (int i = 0; i < theShipsType2.Count; i++)
+            {
+                theShipsType2[i].Draw(spriteBatch);
+                //Vector2 posForFlee = new Vector2(theShipsType2[i].mPosition.X + Globals.translation.X, theShips[i].mPosition.Y + Globals.translation.Y);
+                //spriteBatch.DrawString(font, theShipsType2[i].mVelocity.ToString(), theShipsType2[i].mTranslation, Color.White);
             }
             for (int i = 0; i < thePlanets.Length; i++)
             {
-                thePlanets[i].Draw(spriteBatch);
+                //thePlanets[i].Draw(spriteBatch);
             }
 
             for (int i = 0; i < myBullets.Count; i++)
@@ -281,6 +342,13 @@ namespace GeometryWar
                 if (myBullets[i].alive == true)
                 {
                     myBullets[i].Draw(spriteBatch);
+                }
+            }
+            for (int i = 0; i < enemyBullets.Count; i++)
+            {
+                if (enemyBullets[i].alive == true)
+                {
+                    enemyBullets[i].Draw(spriteBatch);
                 }
             }
 

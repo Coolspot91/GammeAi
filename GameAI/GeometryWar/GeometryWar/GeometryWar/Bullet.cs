@@ -21,6 +21,12 @@ namespace GeometryWar
             this.mVelocity = player.mVelocity;
             this.maxSpeed = 5;
         }
+        public void Init(AIShip enemy)
+        {
+            this.mPosition = enemy.mPosition;
+            this.mVelocity = enemy.mVelocity;
+            this.maxSpeed = 5;
+        }
         public Vector2 getPos
         {
             get { return mPosition; }
@@ -28,10 +34,18 @@ namespace GeometryWar
         public void Update(GameTime theGameTime)
         {
             mPosition += mVelocity;
-            mVelocity = Vector2.Normalize(mVelocity);
+            if (mVelocity.X != 0 && mVelocity.Y != 0)
+            {
+                mVelocity = Vector2.Normalize(mVelocity);
+            }
             mVelocity = mVelocity * maxSpeed;
 
             TimeToLive++;
+        }
+        public void resetBullet()
+        {
+            TimeToLive = 0;
+            alive = false;
         }
     }
 }

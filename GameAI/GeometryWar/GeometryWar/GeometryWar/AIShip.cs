@@ -38,9 +38,9 @@ namespace GeometryWar
 
         }
 
-        public void seek2(Player target)
+        public void seek2(Vector2 playerPosition)
         {
-            mAcceleration = target.mTranslation - mTranslation;
+            mAcceleration = playerPosition - mTranslation;
             //mVelocity += mAcceleration;
 
             if (!(mAcceleration.X == 0 && mAcceleration.Y == 0))
@@ -52,25 +52,6 @@ namespace GeometryWar
 
                  //mOrientation = mVelocity;
             }
-                 //mOrientation = mVelocity;
-
-            //if (mAcceleration.Length() > maxAccel)
-            //{
-            //    mAcceleration = Globals.AngleToVector(maxAccel);
-            //    // mVelocity = Globals.AngleToVector(maxSpeed);
-            //}
-
-            //float mVel = Globals.VectorToAngle(mVelocity);
-
-            //if (mVel > maxSpeed)
-            //{
-            //    mVelocity = Globals.AngleToVector(maxSpeed);
-            //}
-            //if (Globals.VectorToAngle(mAcceleration) > maxAccel && mAcceleration.Length() > maxAccel)
-            //{
-            //   mAcceleration = Globals.AngleToVector(maxAccel);
-            //    //mVelocity = Globals.AngleToVector(maxSpeed);
-            //}
 
             if (mVelocity.Length() > maxSpeed)
             {
@@ -80,9 +61,9 @@ namespace GeometryWar
 
 
         }
-        public void flee(Player target)
+        public void flee(Vector2 playerPos)
         {
-            mVelocity = mTranslation - target.mTranslation;
+            mVelocity = mTranslation - playerPos;
             if (!(mVelocity.X == 0 && mVelocity.Y == 0))
             {
                 mVelocity.Normalize();
@@ -102,20 +83,7 @@ namespace GeometryWar
             }
             count++;
 
-            ////mVelocity = mTranslation - target.mTranslation;
-            //mVelocity = target.mTranslation - mTranslation;
-
-            //if (mVelocity.Length() > maxSpeed)
-            //{
-            //    mVelocity = Vector2.Normalize(mVelocity);
-            //}
-            //if (mVelocity.Length() < 200)
-            //{
-            //    mVelocity = mVelocity / 5; //timeToTarget                       
-            //}
-            //mVelocity = mVelocity * maxSpeed;
-
-            seek2(target);
+            //seek2(target);
             mOrientation = mVelocity;
             mOrientation = mOrientation + maxRot * myran;
             orient = VectorToAngle(mOrientation);
@@ -124,20 +92,21 @@ namespace GeometryWar
         }
 
 
-        public void AvoidingObsSeek(Player target,AIShip AItarget)
+        public void AvoidingObsSeek(Vector2 playerPos,Vector2 AItarget)
         {
             // Check ditance of enemy ships
-            distanceFromTarget = Vector2.Distance(AItarget.mPosition, mPosition);
+            distanceFromTarget = Vector2.Distance(playerPos, mPosition);
 
             if (distanceFromTarget < 60)
             {
                 //collided = true;
-                flee(target);
+                flee(playerPos);
             }
-            else 
+            else if (distanceFromTarget > 80 )
             {
-                seek2(target);
+                seek2(playerPos);
             }
+            //else()
 
             //if (collided == false)
             //{
@@ -160,40 +129,7 @@ namespace GeometryWar
 
 
 
-
-
-        //public void seek(Player target)
-        //{
-        //    distanceFromTarget = Vector2.Distance(target.getPos, mPosition);
-        //    //mVelocity = target.mTranslation - mTranslation;
-        //    //if (!(mVelocity.X == 0 && mVelocity.Y == 0))
-        //    //{
-        //    //    mVelocity.Normalize();
-        //    //}
-        //    //mVelocity = mVelocity * maxSpeed;
-        //    //mOrientation = Vector2.Normalize(mVelocity);
-        //    //mOrientation = mVelocity;
-
-
-        //    mVelocity = target.mTranslation - mTranslation;
-        //    if (mVelocity.Length() < 200)
-        //    {
-        //        mVelocity = mVelocity / 5; //timeToTarget
-        //        if (mVelocity.Length() > maxSpeed)
-        //        {
-        //            mVelocity = Vector2.Normalize(mVelocity);
-        //            mVelocity = mVelocity * maxSpeed;
-        //            mOrientation = mVelocity;
-
-        //            //mOrientation = mVelocity;
-        //            //mOrientation = mOrientation + new Vector2(2, 2) * Globals.random.Next(-1, 1);
-        //            //float orient = VectorToAngle(mOrientation);
-        //            //mVelocity = new Vector2((float)Math.Cos(orient), (float)Math.Sin(orient));
-        //            //return new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
-        //        }
-        //    }
-
-        //}
+        
 
 
         //public void pursue(Player target)
