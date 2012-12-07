@@ -35,6 +35,9 @@ namespace GeometryWar
         public float maxSpeed = 180;
         public float maxAccel = 5.5f;
         public bool collided;
+        public float health = 100;
+        public string gameOver = "Game Over";
+        public float rateOfFire = 0;
 
         public Entity()
         {
@@ -87,7 +90,7 @@ namespace GeometryWar
         {
             distanceFromTarget = Vector2.Distance(object1.mPosition, object2.mPosition);
 
-            if (distanceFromTarget < 40)
+            if (distanceFromTarget < 60)
             {
                 // Collision
                 return true;
@@ -98,7 +101,20 @@ namespace GeometryWar
             }
         }
 
+        public bool CheckCollisionWithPlayer( Entity object2)
+        {
+            distanceFromTarget = Vector2.Distance(mTranslation, object2.mTranslation);
 
+            if (distanceFromTarget < 40)
+            {
+                // Collision
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         public static float VectorToAngle(Vector2 vector)
         {

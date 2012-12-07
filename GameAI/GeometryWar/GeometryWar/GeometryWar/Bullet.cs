@@ -14,18 +14,20 @@ namespace GeometryWar
     {
         public float TimeToLive = 0;
         public bool alive = false;
+        private Entity creator;
 
         public void Init(Player player)
         {
             this.mPosition = player.getPos;
             this.mVelocity = player.mVelocity;
-            this.maxSpeed = 5;
+            this.mOrientation = player.mOrientation;
+            this.maxSpeed = 14;
         }
         public void Init(AIShip enemy)
         {
-            this.mPosition = enemy.mPosition;
-            this.mVelocity = enemy.mVelocity;
-            this.maxSpeed = 5;
+            this.mPosition = enemy.getPosEnemy;
+            this.mVelocity = new Vector2(enemy.mVelocity.X*0.1f, enemy.mVelocity.Y*0.1f);
+            this.maxSpeed = 10;
         }
         public Vector2 getPos
         {
@@ -39,13 +41,16 @@ namespace GeometryWar
                 mVelocity = Vector2.Normalize(mVelocity);
             }
             mVelocity = mVelocity * maxSpeed;
-
-            TimeToLive++;
         }
         public void resetBullet()
         {
             TimeToLive = 0;
             alive = false;
+        }
+
+        public Entity getCreator()
+        {
+            return creator;
         }
     }
 }

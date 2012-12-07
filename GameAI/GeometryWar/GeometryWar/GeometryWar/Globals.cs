@@ -20,11 +20,12 @@ namespace GeometryWar
         //game area is nine times that of 800x600 screen!
         public  static Vector2 Universe = new Vector2(2400,1800);  
         //centre of viewable screen 800x600
-        public static Vector2 Centre = new Vector2(400, 300);
+        public static Vector2 Centre = new Vector2(600, 400);
         public static Vector2 radar = new Vector2(96, 72);
         public static int grainSize =25;
         //current translation to apply to place player in screen centre!
         public static Vector2 translation = Vector2.Zero;
+        public static Vector2 topRight = new Vector2(1050,00);
         //translation for radar
         public static Vector2 radarTranslation = Vector2.Zero;
         public static Random random = new Random();

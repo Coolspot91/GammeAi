@@ -16,18 +16,25 @@ namespace GeometryWar
     {
         float myran = 0;
         float orient = 0;
-        Vector2 maxRot = new Vector2(40, 40);
+        Vector2 maxRot = new Vector2(30, 30);
         float count = 0;
         float timePrediction = 5;        
 
+        
         //seek with arrive
+        public Vector2 getPosEnemy
+        {
+            get { return mPosition; }
+
+        }
         public void seek(Player target)
         {
             //With Arrive          
             mVelocity = target.mTranslation - mTranslation;
+            // if near player slow down
             if (mVelocity.Length() < 200)
             {
-                mVelocity = mVelocity / 4; //timeToTarget
+                mVelocity = mVelocity / 4; // 4 = timeToTarget
             }
             if (mVelocity.Length() > maxSpeed)
             {
@@ -40,8 +47,8 @@ namespace GeometryWar
 
         public void seek2(Vector2 playerPosition)
         {
+            // accelerate towards player
             mAcceleration = playerPosition - mTranslation;
-            //mVelocity += mAcceleration;
 
             if (!(mAcceleration.X == 0 && mAcceleration.Y == 0))
             {
@@ -49,8 +56,6 @@ namespace GeometryWar
                  mAcceleration = mAcceleration * maxAccel;
                  // apply a drag force(air res)
                  mVelocity -= mVelocity * 0.01f;
-
-                 //mOrientation = mVelocity;
             }
 
             if (mVelocity.Length() > maxSpeed)
@@ -73,17 +78,17 @@ namespace GeometryWar
         }
 
 
-        public void wandering(Player target)
+        public void wandering(Vector2 position)
         {
             if (count > 50)
             {
 
-                myran = Globals.random.Next(-1, 1);
+                myran = Globals.random.Next(-10, 10);
                 count = 0;
             }
             count++;
 
-            //seek2(target);
+            flee(position);
             mOrientation = mVelocity;
             mOrientation = mOrientation + maxRot * myran;
             orient = VectorToAngle(mOrientation);
@@ -92,60 +97,26 @@ namespace GeometryWar
         }
 
 
-        public void AvoidingObsSeek(Vector2 playerPos,Vector2 AItarget)
+        public void AvoidCollison(Vector2 collsionPosTarget, Vector2 playerPos, float health)
         {
-            // Check ditance of enemy ships
-            distanceFromTarget = Vector2.Distance(playerPos, mPosition);
+            distanceFromTarget = Vector2.Distance(mTranslation, collsionPosTarget);
 
-            if (distanceFromTarget < 60)
+            // if two ships are near each other, flee each other
+            if (distanceFromTarget < 80)
             {
-                //collided = true;
-                flee(playerPos);
+                flee(collsionPosTarget);
             }
-            else if (distanceFromTarget > 80 )
+            // if healthy seek player
+            else if (health > 10)
             {
                 seek2(playerPos);
             }
-            //else()
-
-            //if (collided == false)
-            //{
-            //    mVelocity = target.mTranslation - mTranslation;
-
-            //    if (mVelocity.Length() > maxSpeed)
-            //    {
-            //        mVelocity = Vector2.Normalize(mVelocity);
-            //        mVelocity = mVelocity * maxSpeed;
-            //        mOrientation = mVelocity;
-            //    }
-            //}
-            //else if (collided == true)
-            //{
-            //    flee(target);
-            //}
+            // if weak flee
+            else
+            {
+                flee(playerPos);
+            }
         }
 
-
-
-
-
-        
-
-
-        //public void pursue(Player target)
-        //{
-        //    mOrientation = target.mVelocity - mTranslation;
-        //    float  distance = mOrientation.Length();
-        //    float speed = mVelocity.Length();
-        //    if (speed <= distance / 20)
-        //    {
-        //        timePrediction = 20;
-        //    }
-        //    else
-        //        timePrediction = distance / speed;
-        //    target.nwPos = target.mTranslation + target.mVelocity * timePrediction;
-        //    seek(target);
-
-        //}
     }
 }
